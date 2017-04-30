@@ -17,7 +17,7 @@ var config = {
     var institute = document.getElementById("institute-input").value
     var phoneNumber = document.getElementById("phoneNumber-input").value
     var couponCode = document.getElementById("couponCode-input").value
-    var timeStamp = Math.floor(Date.now() / 1000)
+    // var timeStamp = Math.floor(Date.now() / 1000)
     console.log(name)
     console.log(status)
     console.log(institute)
@@ -30,7 +30,7 @@ var config = {
     phoneNumber : phoneNumber,
     institute: institute,
     couponCode: couponCode,
-    timeStamp: timeStamp
+    timeStamp: firebase.database.ServerValue.TIMESTAMP
   });
     }
     
