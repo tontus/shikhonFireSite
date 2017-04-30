@@ -1,0 +1,184 @@
+<html>
+
+<head>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+</head>
+
+<body style="text-align: center; background-color: #ede7f6">
+    <!--<div >
+        <img src="http://www.shikhon.org/images/logo.png" />
+    </div>-->
+    <div class="row" style="height: 150px;" >
+            <div class="col-md-3">
+                <img src="http://www.shikhon.org/images/logo.png"/>
+            </div>
+            <div class="col-md-8">
+                <h1 class="display-4" style="text-align: center">Shikhon Closing Ceremony Participant Counter</h1>
+            </div>
+        </div>
+    <div class="container row">
+        <div class="col-md-10">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #65318F">
+                        <p>Total Participant: <span id="participant-count">0</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card" style="background-color: #3F51B5">
+                        <p>Student: <span id="student-count">0</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    <div class="card" style="background-color: #FF9800">
+                        <p>Teacher: <span id="teacher-count">0</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    <div class="card" style="background-color: #F44336">
+                        <p>Guardian: <span id="guardian-count">0</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    <div class="card" style="background-color: #4CAF50">
+                        <p>Head of Institute: <span id="hi-count">0</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    <div class="card" style="background-color: #795548">
+                        <p>Head of Department: <span id="hd-count">0</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    <div class="card" style="background-color: #03A9F4">
+                        <p>Other: <span id="other-count">0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2" style="align-items: center">
+            <div id="piechart" style="align-content: center"></div>
+        </div>
+    </div>
+
+    <style>
+        .card {
+            margin: 10px;
+            width: 100%;
+            height: 170px;
+            color: #fff;
+            font-size: 34px;
+            vertical-align: middle;
+            line-height: 170px;
+            /*font-weight: 600;*/
+            font-family: 'segoe ui';
+        }
+    </style>
+
+
+    <script>
+        var config = {
+            apiKey: "AIzaSyBRt8mdeUjfIif3_8oT1sPa87SmetopI38",
+            authDomain: "shikhonsms.firebaseapp.com",
+            databaseURL: "https://shikhonsms.firebaseio.com",
+            projectId: "shikhonsms",
+            storageBucket: "shikhonsms.appspot.com",
+            messagingSenderId: "268279432"
+        };
+        firebase.initializeApp(config);
+
+
+
+        const dbRef = firebase.database().ref().child("AllData")
+        var participant = 0
+        var student = 0
+        var teacher = 0
+        var headOfinstitute = 0
+        var headOfDept = 0
+        var other = 0
+        var guardian = 0
+        const totalStudent = document.querySelector("#student-count")
+        const totalTeacher = document.querySelector("#teacher-count")
+        const totalGuardian = document.querySelector("#guardian-count")
+        const totalHI = document.querySelector("#hi-count")
+        const totalHD = document.querySelector("#hd-count")
+        const totalOther = document.querySelector("#other-count")
+        const totalParticipant = document.querySelector("#participant-count")
+
+
+        dbRef.on('child_added', snap => {
+            google.charts.load('current', { 'packages': ['corechart'] });
+            // google.charts.setOnLoadCallback(drawChart);
+
+            if (snap.child('status').val() == 'S' || snap.child('status').val() == 's') {
+                student++
+                totalStudent.innerText = "" + student
+            }
+            if (snap.child('status').val() == 'T' || snap.child('status').val() == 't') {
+                teacher++
+                totalTeacher.innerText = "" + teacher
+            }
+            if (snap.child('status').val() == 'HI' || snap.child('status').val() == 'hi') {
+                headOfinstitute++
+                totalHI.innerText = "" + headOfinstitute
+            }
+
+            if (snap.child('status').val() == 'HD' || snap.child('status').val() == 'hd') {
+                headOfDept++
+                totalHD.innerText = "" + headOfDept
+            }
+            if (snap.child('status').val() == 'G' || snap.child('status').val() == 'g') {
+                guardian++
+                totalGuardian.innerText = "" + guardian
+            }
+            if (snap.child('status').val() == 'O' || snap.child('status').val() == 'o') {
+                other++
+                totalOther.innerText = "" + other
+            }
+
+            participant++
+            totalParticipant.innerText = "" + participant
+            
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Participant', 'Count'],
+                    ['Student', student],
+                    ['Teacher', teacher],
+                    ['Guardian', guardian],
+                    ['Head of Institute', headOfinstitute],
+                    ['Head of Department', headOfDept],
+                    ['Other', other],
+                ]);
+
+                // Optional; add a title and set the width and height of the chart
+                var options = { 
+                    'title': '', 
+                    'width': 1300, 
+                    'height': 780, 
+                    backgroundColor: '#ede7f6',
+                    colors: ['#3F51B5', '#FF9800', '#F44336', '#4CAF50', '#795548','#03A9F4'] 
+            };
+
+                // Display the chart inside the <div> element with id="piechart"
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                chart.draw(data, options);
+            }
+
+
+        })
+    </script>
+</body>
+
+</html>
